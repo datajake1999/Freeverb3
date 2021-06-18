@@ -13,7 +13,6 @@ Freeverb::Freeverb(audioMasterCallback audioMaster)
 	setNumInputs(2);		// stereo in
 	setNumOutputs(2);		// stereo out
 	setUniqueID('JzR3');	// identify - CHANGE THIS TO MAKE YOUR OWN!!!
-	canMono();				// makes sense to feed both inputs with the same signal
 	canProcessReplacing();	// supports both accumulating and replacing output
 	strcpy(programName, "Default");	// default program name
 }
@@ -46,17 +45,6 @@ bool Freeverb::getProductString (char* text)
     return true;
 }
 
-long Freeverb::canDo (char* text)
-{
-    if (!strcmp (text, "1in1out"))
-        return 1;
-    if (!strcmp (text, "2in2out"))
-        return 1;
-	if (!strcmp (text, "1in2out"))
-		return 1;
-    return -1;
-}
-
 void Freeverb::setProgramName(char *name)
 {
 	strcpy(programName, name);
@@ -67,7 +55,7 @@ void Freeverb::getProgramName(char *name)
 	strcpy(name, programName);
 }
 
-void Freeverb::setParameter(long index, float value)
+void Freeverb::setParameter(VstInt32 index, float value)
 {
 	switch (index)
 	{
@@ -92,7 +80,7 @@ void Freeverb::setParameter(long index, float value)
 	}
 }
 
-float Freeverb::getParameter(long index)
+float Freeverb::getParameter(VstInt32 index)
 {
 	float ret;
 
@@ -120,7 +108,7 @@ float Freeverb::getParameter(long index)
 	return ret;
 }
 
-void Freeverb::getParameterName(long index, char *label)
+void Freeverb::getParameterName(VstInt32 index, char *label)
 {
 	switch (index)
 	{
@@ -145,7 +133,7 @@ void Freeverb::getParameterName(long index, char *label)
 	}
 }
 
-void Freeverb::getParameterDisplay(long index, char *text)
+void Freeverb::getParameterDisplay(VstInt32 index, char *text)
 {
 	switch (index)
 	{
@@ -156,24 +144,24 @@ void Freeverb::getParameterDisplay(long index, char *text)
 			strcpy(text,"Normal");
 		break;
 	case KRoomSize:
-		float2string(model.getroomsize()*scaleroom+offsetroom, text);
+		float2string(model.getroomsize()*scaleroom+offsetroom, text, kVstMaxParamStrLen);
 		break;
 	case KDamp:
-		long2string((long)(model.getdamp()*100), text);
+		int2string((int)(model.getdamp()*100), text, kVstMaxParamStrLen);
 		break;
 	case KWet:
-		dB2string(model.getwet()*scalewet,text);
+		dB2string(model.getwet()*scalewet,text, kVstMaxParamStrLen);
 		break;
 	case KDry:
-		dB2string(model.getdry()*scaledry,text);
+		dB2string(model.getdry()*scaledry,text, kVstMaxParamStrLen);
 		break;
 	case KWidth:
-		long2string((long)(model.getwidth()*100), text);
+		int2string((int)(model.getwidth()*100), text, kVstMaxParamStrLen);
 		break;
 	}
 }
 
-void Freeverb::getParameterLabel(long index, char *label)
+void Freeverb::getParameterLabel(VstInt32 index, char *label)
 {
 	switch (index)
 	{
@@ -194,12 +182,7 @@ void Freeverb::getParameterLabel(long index, char *label)
 	}
 }
 
-void Freeverb::process(float **inputs, float **outputs, long sampleFrames)
-{
-	model.processmix(inputs[0],inputs[1],outputs[0],outputs[1],sampleFrames,1);
-}
-
-void Freeverb::processReplacing(float **inputs, float **outputs, long sampleFrames)
+void Freeverb::processReplacing(float **inputs, float **outputs, VstInt32 sampleFrames)
 {
 	model.processreplace(inputs[0],inputs[1],outputs[0],outputs[1],sampleFrames,1);
 }
