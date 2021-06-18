@@ -21,8 +21,6 @@ Note that this version of Freeverb doesn't contain predelay, or any EQ. I though
 
 Also, the code in this version of Freeverb has been optimised. This has changed the sound *slightly*, but not significantly compared to how much processing power it saves.
 
-Finally, note that there is also a built copy of this version of Freeverb called "Freeverb3.dll" - this is a VST plugin for the PC. If you want a version for the Mac or anything else, then you'll need to build it yourself from the code.
-
 
 Technical Explanation
 ---------------------
